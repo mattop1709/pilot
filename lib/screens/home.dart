@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:test_app/widgets/app_bar.dart';
+import 'package:test_app/widgets/form.dart';
 import 'package:test_app/widgets/left_bar.dart';
 import 'package:test_app/widgets/right_bar.dart';
+import '../styles/text.dart' as styles;
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -43,73 +46,31 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        title: Text(widget.title,
-            style: TextStyle(color: Colors.red, fontWeight: FontWeight.w300)),
-      ),
+      appBar: CustomAppBar(title: widget.title),
       body: SingleChildScrollView(
           child: Column(
         children: [
-          SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Container(
-                  width: 130,
-                  child: TextField(
-                      controller: _heightController,
-                      style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.w300,
-                          color: Colors.red),
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Height',
-                          hintStyle: TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.w300,
-                          )))),
-              Container(
-                  width: 130,
-                  child: TextField(
-                      controller: _weightController,
-                      style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.w300,
-                          color: Colors.red),
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Weight',
-                          hintStyle: TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.w300,
-                          ))))
+              CustomForm(controller: _heightController, caption: 'Height'),
+              CustomForm(controller: _weightController, caption: 'Weight'),
             ],
           ),
-          SizedBox(height: 30),
+          SizedBox(height: 40),
           GestureDetector(
             onTap: _calculateBMI,
-            child: Text('Calculate',
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue)),
+            child: Text('Calculate', style: styles.getButton()),
           ),
-          SizedBox(height: 50),
+          SizedBox(height: 16),
           Container(
               child: Text(_bmiResult.toStringAsFixed(2),
-                  style: TextStyle(fontSize: 88, color: Colors.blue))),
+                  style: styles.getHeaderText())),
           SizedBox(height: 10),
           Visibility(
               visible: _textResult.isNotEmpty,
               child: Container(
-                  child: Text(_textResult,
-                      style: TextStyle(fontSize: 24, color: Colors.blue)))),
+                  child: Text(_textResult, style: styles.getFootnoteText()))),
           SizedBox(height: 40),
           LeftBar(barWidth: 40),
           SizedBox(height: 10),
@@ -121,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
           SizedBox(height: 10),
           RightBar(barWidth: 160),
           SizedBox(height: 10),
-          RightBar(barWidth: 80)
+          RightBar(barWidth: 70)
         ],
       )),
     );
