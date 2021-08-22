@@ -1,6 +1,14 @@
+// packages
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+// reusable widgets
+import '../widgets/progress_bar.dart';
+import '../widgets/quiz_option.dart';
+
+// others
 import '../controllers/question_controller.dart';
+import '../models/questions.dart';
 
 // ignore: must_be_immutable
 class QuestionPage extends StatelessWidget {
@@ -50,6 +58,14 @@ class QuestionPage extends StatelessWidget {
                 SizedBox(
                   height: 16,
                 ),
+                Expanded(
+                    child: PageView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        controller: _questionController.pageController,
+                        onPageChanged: _questionController.updateQuestionNumber,
+                        itemCount: _questionController.questions.length,
+                        itemBuilder: (context, index) => QuestionCard(
+                            question: _questionController.questions[index])))
               ],
             ))
           ],
@@ -57,63 +73,31 @@ class QuestionPage extends StatelessWidget {
   }
 }
 
-class ProgressBar extends StatelessWidget {
-  ProgressBar({Key? key}) : super(key: key);
+class QuestionCard extends StatelessWidget {
+  QuestionCard({Key? key, required this.question}) : super(key: key);
+
+  final Question question;
 
   @override
   Widget build(BuildContext context) {
+    QuestionController _controller = Get.put(QuestionController());
     return Container(
-      width: double.infinity,
-      height: 32,
+      margin: EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       decoration: BoxDecoration(
-          border: Border.all(color: Color(0xFF3F4768), width: 2),
-          borderRadius: BorderRadius.circular(48)),
-      child: GetBuilder<QuestionController>(
-          init: QuestionController(),
-          builder: (controller) {
-            /* timer handler */
-            String timer() {
-              int totalTime = 60;
-              int time = (controller.animation.value * 60).round();
-              int result = totalTime - time;
-
-              String handleSecond() {
-                if (result <= 1) {
-                  return 'second';
-                }
-                return 'seconds';
-              }
-
-              return '${(result)} ${(handleSecond())} left';
-            }
-
-            return Stack(
-              children: [
-                LayoutBuilder(
-                    builder: (context, constraints) => Container(
-                          width:
-                              constraints.maxWidth * controller.animation.value,
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [Color(0xFF46A0AE), Color(0xFF00FFCB)],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                              ),
-                              borderRadius: BorderRadius.circular(48)),
-                        )),
-                Positioned.fill(
-                    child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(timer()),
-                    ],
-                  ),
-                ))
-              ],
-            );
-          }),
+          color: Colors.white, borderRadius: BorderRadius.circular(24)),
+      child: Column(
+        children: [
+          Text(question.question, style: TextStyle(color: Colors.black)),
+          SizedBox(height: 16),
+          ...List.generate(
+              question.options.length,
+              (index) => Option(
+                  index: index,
+                  text: question.options[index],
+                  press: () => _controller.checkAnswer(question, index)))
+        ],
+      ),
     );
   }
 }
