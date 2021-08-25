@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../styles/text.dart' as style;
 import './question.dart';
+import '../styles/text.dart' as style;
 
-class WelcomePage extends StatelessWidget {
+class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +32,7 @@ class WelcomePage extends StatelessWidget {
                 ),
                 Spacer(flex: 1),
                 InkWell(
-                    onTap: () => Get.to(QuestionPage()),
+                    onTap: () => Get.to(() => QuestionPage()),
                     child: Container(
                         alignment: Alignment.center,
                         width: double.infinity,

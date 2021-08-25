@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 import '../models/questions.dart';
+import '../screens/score.dart';
 
 class QuestionController extends GetxController
     with SingleGetTickerProviderMixin {
@@ -26,7 +27,8 @@ class QuestionController extends GetxController
   bool _isAnswered = false;
   bool get isAnswered => this._isAnswered;
 
-  late int _correctAnswer;
+  /* need to initialize to handle user whom not answered any questions */
+  late int _correctAnswer = 0;
   int get correctAnswer => this._correctAnswer;
 
   late int _selectedAnswer;
@@ -42,6 +44,7 @@ class QuestionController extends GetxController
   /* similar to component did mount */
   @override
   void onInit() {
+    print('widget on init');
     _animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 60));
     _animation = Tween<double>(begin: 0, end: 1).animate(_animationController)
@@ -57,9 +60,10 @@ class QuestionController extends GetxController
   /* similar to component will unmount */
   @override
   void onClose() {
-    super.onClose();
+    print('widget on close');
     _animationController.dispose();
     _pageController.dispose();
+    super.onClose();
   }
 
   void checkAnswer(Question question, int selectedIndex) {
@@ -87,14 +91,20 @@ class QuestionController extends GetxController
 
       /* return the counter to default value */
       _animationController.reset();
-
       _animationController.forward().whenComplete(nextQuestion);
     } else {
-      /* get to score screen */
+      Get.to(() => ScoreScreen());
     }
   }
 
   void updateQuestionNumber(int index) {
     _questionNumber.value = index + 1;
+  }
+
+  void resetQuiz() {
+    _animationController.reset();
+    _isAnswered = false;
+    _questionNumber.value = 1;
+    _numberOfCorrectAnswers = 0;
   }
 }

@@ -15,7 +15,7 @@ class QuestionPage extends StatelessWidget {
   QuestionPage({Key? key}) : super(key: key);
 
   /* need to add controller */
-  QuestionController _questionController = Get.put(QuestionController());
+  final QuestionController _questionController = Get.put(QuestionController());
 
   @override
   Widget build(BuildContext context) {
